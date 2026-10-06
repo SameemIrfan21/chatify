@@ -11,10 +11,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+      mobileNumber: {
+        type: String,
+        default: undefined,
+      },
     password: {
       type: String,
-      required: true,
-      minlength: 6,
+      required: false,
+      default: "",
     },
     profilePic: {
       type: String,
@@ -23,6 +27,9 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true } // createdAt & updatedAt
 );
+
+// Ensure uniqueness only when `mobileNumber` exists (allows multiple docs without it)
+userSchema.index({ mobileNumber: 1 }, { unique: true, partialFilterExpression: { mobileNumber: { $exists: true } } });
 
 const User = mongoose.model("User", userSchema);
 
